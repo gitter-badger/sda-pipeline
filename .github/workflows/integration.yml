@@ -1,5 +1,5 @@
 name: integration test
-on: [pull_request]
+on: push
 jobs:
   s3_integration:
     name: s3_integration
