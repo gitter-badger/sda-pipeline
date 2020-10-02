@@ -169,13 +169,15 @@ type downloadWriterAt struct {
 func (dwa downloadWriterAt) WriteAt(p []byte, offset int64) (n int, err error) {
 	// Verify offset so we get things in order
 	if offset != dwa.written {
-		log.Errorf("Received write to unexpected offset (%d instead of %d(", offset, dwa.written)
+		log.Errorf("Received write to unexpected offset (%d instead of %d)", offset, dwa.written)
 		return 0, fmt.Errorf("Can't do out-of-order writes to pipe, adjust concurrency")
 	}
 
+	fmt.Printf("writing at %d, %d bytes\n", offset, len(p))
 	writtenNow, err := dwa.w.Write(p)
 
-	dwa.written += int64(writtenNow)
+	fmt.Printf("wrote %d bytes\n", writtenNow)
+	dwa.written = dwa.written + int64(writtenNow)
 
 	return writtenNow, err
 }
@@ -191,6 +193,7 @@ func (sb *s3Backend) NewFileReader(filePath string) (io.ReadCloser, error) {
 		log.Error(err)
 		return nil, err
 	}
+
 	var reader io.ReadCloser
 	var writer io.WriterAt
 
