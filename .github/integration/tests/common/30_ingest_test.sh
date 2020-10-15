@@ -57,6 +57,7 @@ for file in dummy_data.c4gh largefile.c4gh; do
        sleep 10
     done
 
+      docker logs ingest
     # Wait some for things to settle
     filesize=$(stat -c '%b' "$file")
     sleep "$(($filesize/100000))"
